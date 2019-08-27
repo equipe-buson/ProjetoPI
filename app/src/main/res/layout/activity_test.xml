@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:inputType="textPersonName"
         android:layout_marginTop="100dp"
-        android:hint="Nome"/>
+        android:hint="Opa"/>
 
     <EditText
         android:id="@+id/numero_onibus"
