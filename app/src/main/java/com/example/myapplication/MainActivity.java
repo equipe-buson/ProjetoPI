@@ -35,10 +35,10 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //ssss
 
-                EditText et_email = (EditText) findViewById(R.id.main_email);
-                EditText et_senha = (EditText) findViewById(R.id.main_senha);
-                String email = et_email.getText().toString();
-                String senha = et_senha.getText().toString();
+                final EditText et_email = (EditText) findViewById(R.id.main_email);
+                final EditText et_senha = (EditText) findViewById(R.id.main_senha);
+                final String email = et_email.getText().toString();
+                final String senha = et_senha.getText().toString();
 
                 Toast.makeText(MainActivity.this,"Acessando conta",Toast.LENGTH_LONG).show();
 
@@ -51,10 +51,14 @@ public class MainActivity extends AppCompatActivity {
                             Intent vai_pro_test = new Intent(MainActivity.this, test.class);
                             startActivity(vai_pro_test);
 
+                            et_email.setText("");
+                            et_senha.setText("");
+
+                        }else{
+
+                            Toast.makeText(MainActivity.this,"Email ou senha Incorretos",Toast.LENGTH_SHORT).show();
+
                         }
-
-
-
                     }
                 });
 
