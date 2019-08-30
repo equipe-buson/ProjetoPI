@@ -51,7 +51,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         setTitle("Motorista");
 
         // Spinner element
-        Spinner spinner = (Spinner) findViewById(R.id.linha);
+        final Spinner spinner = (Spinner) findViewById(R.id.linha);
 
         // Spinner click listener
         spinner.setOnItemSelectedListener(this);
@@ -63,7 +63,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         categories.add("Terminal - Poço Grande");
         categories.add("Poço Grande - Terminal");
 
-        final String linha = spinner.toString();
+
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
@@ -74,6 +74,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
 
+        final mot motorista = new mot();
         incializarFireBase();
         int id = 1;
 
@@ -81,8 +82,8 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         botao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String linha = spinner.getSelectedItem().toString();
 
-                final mot motorista = new mot();
 
                 motorista.setNomeMotorista(etNome.getText().toString());
                 motorista.setNumMotorista(etNumeroOnibus.getText().toString());
@@ -103,9 +104,8 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
             @Override
             public void onClick(View v) {
 
-                ref.child("mot02").child(nome).removeValue(motorista);
 
-
+                ref.child("mot02").child(motorista.getNomeMotorista()).removeValue();
 
                 botao_finalizar.setVisibility(View.INVISIBLE);
                 botao.setVisibility(View.VISIBLE);
@@ -125,6 +125,8 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
     }
     public void onNothingSelected(AdapterView<?> arg0) {
         // TODO Auto-generated method stub
+
+
     }
 }
 
