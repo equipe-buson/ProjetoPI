@@ -38,7 +38,9 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-        Button botao = (Button) findViewById(R.id.btn_iniciar);
+        final Button botao = (Button) findViewById(R.id.btn_iniciar);
+        final Button botao_finalizar = (Button) findViewById(R.id.btn_finalizar);
+
         final EditText etNome = (EditText) findViewById(R.id.nome_motorista);
         final EditText etNumeroOnibus = (EditText) findViewById(R.id.numero_onibus);
         Spinner etLinha = (Spinner) findViewById(R.id.linha);
@@ -55,7 +57,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         spinner.setOnItemSelectedListener(this);
 
         // Spinner Drop down elements
-        List<String> categories = new ArrayList<String>();
+        final List<String> categories = new ArrayList<String>();
         categories.add("Terminal - Bela vista");
         categories.add("Bela Vista - Terminal");
         categories.add("Terminal - Poço Grande");
@@ -88,7 +90,27 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
 
                 ref.child("mot02").child(motorista.getNomeMotorista()).setValue(motorista);
 
+                botao.setVisibility(View.INVISIBLE);
+                botao_finalizar.setVisibility(View.VISIBLE);
+
                 Toast.makeText(test.this,"Iniciando",Toast.LENGTH_SHORT).show();
+
+            }
+
+        });
+
+        botao_finalizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                ref.child("mot02").child(nome).removeValue(motorista);
+
+
+
+                botao_finalizar.setVisibility(View.INVISIBLE);
+                botao.setVisibility(View.VISIBLE);
+
+                Toast.makeText(test.this,"Finalizando",Toast.LENGTH_SHORT).show();
 
             }
         });

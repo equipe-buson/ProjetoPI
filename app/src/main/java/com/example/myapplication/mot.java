@@ -1,10 +1,15 @@
 package com.example.myapplication;
 
+import java.lang.reflect.Array;
+
 public class mot {
 
     private String nomeMotorista;
     private String numMotorista;
     private String linha;
+
+
+    private Array categorias;
 
 
     public mot() {
