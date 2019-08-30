@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -20,26 +21,27 @@ import java.util.List;
 public class test extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     final FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference ref = database.getReference("https://loginfire-23a07.firebaseio.com/");
-mot moto= new mot();
 
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference ref;
 
+    private void incializarFireBase() {
+
+        FirebaseApp.initializeApp(test.this);
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        ref = firebaseDatabase.getReference();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
-
-
-
         Button botao = (Button) findViewById(R.id.btn_iniciar);
-        EditText etNome = (EditText) findViewById(R.id.nome_motorista);
-        EditText etNumeroOnibus = (EditText) findViewById(R.id.numero_onibus);
+        final EditText etNome = (EditText) findViewById(R.id.nome_motorista);
+        final EditText etNumeroOnibus = (EditText) findViewById(R.id.numero_onibus);
         Spinner etLinha = (Spinner) findViewById(R.id.linha);
-
-
-
 
         final String nome = etNome.getText().toString();
         final String numerobus = etNumeroOnibus.getText().toString();
@@ -59,8 +61,7 @@ mot moto= new mot();
         categories.add("Terminal - Poço Grande");
         categories.add("Poço Grande - Terminal");
 
-        String linha = spinner.toString();
-
+        final String linha = spinner.toString();
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
@@ -71,16 +72,23 @@ mot moto= new mot();
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
 
+        incializarFireBase();
+        int id = 1;
+
+
         botao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                DatabaseReference postRef = ref.child("/motorista/ygENNIxo7K9zfB9i1icJ");
-                postRef.child("motota").child("12345");
+                final mot motorista = new mot();
 
+                motorista.setNomeMotorista(etNome.getText().toString());
+                motorista.setNumMotorista(etNumeroOnibus.getText().toString());
+                motorista.setLinha(linha);
+
+                ref.child("mot02").child(motorista.getNomeMotorista()).setValue(motorista);
 
                 Toast.makeText(test.this,"Iniciando",Toast.LENGTH_SHORT).show();
-
 
             }
         });
