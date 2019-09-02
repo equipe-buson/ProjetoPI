@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -41,12 +42,12 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         final Button botao = (Button) findViewById(R.id.btn_iniciar);
         final Button botao_finalizar = (Button) findViewById(R.id.btn_finalizar);
 
-        final EditText etNome = (EditText) findViewById(R.id.nome_motorista);
-        final EditText etNumeroOnibus = (EditText) findViewById(R.id.numero_onibus);
+        final TextInputEditText etNome = findViewById(R.id.nome_motorista);
+        final TextInputEditText etNumeroOnibus = findViewById(R.id.numero_onibus);
         final Spinner etLinha = (Spinner) findViewById(R.id.linha);
 
-        final String nome = etNome.getText().toString();
-        final String numerobus = etNumeroOnibus.getText().toString();
+        final String nome = etNome.getText().toString().trim();
+        final String numerobus = etNumeroOnibus.getText().toString().trim();
 
         setTitle("Motorista");
 

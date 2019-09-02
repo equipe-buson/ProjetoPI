@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,9 +36,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
 
                 final EditText et_email = (EditText) findViewById(R.id.main_email);
-                final EditText et_senha = (EditText) findViewById(R.id.main_senha);
-                final String email = et_email.getText().toString();
-                final String senha = et_senha.getText().toString();
+                final TextInputEditText et_senha = (TextInputEditText) findViewById(R.id.main_senha);
+                final String email = et_email.getText().toString().trim();
+                final String senha = et_senha.getText().toString().trim();
 
                 Toast.makeText(MainActivity.this,"Acessando conta",Toast.LENGTH_LONG).show();
 
