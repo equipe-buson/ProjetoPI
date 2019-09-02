@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setTitle("Login");
+        setTitle("BusON");
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //ssss
 
                 final EditText et_email = (EditText) findViewById(R.id.main_email);
                 final EditText et_senha = (EditText) findViewById(R.id.main_senha);

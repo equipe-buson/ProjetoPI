@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -12,18 +13,20 @@
     <EditText android:id="@+id/main_email"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:inputType="textEmailAddress"
-        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="130dp"
         android:hint="Email"/>
 
-    <EditText android:id="@+id/main_senha"
+    <EditText
+        android:id="@+id/main_senha"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:inputType="textPassword"
+        android:layout_below="@+id/main_email"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:hint="Senha"/>
+        android:hint="Senha"
+        android:inputType="textPassword"/>
 
     <Button android:id="@+id/btn_login"
         android:text="Entrar"
@@ -36,8 +39,16 @@
         android:shadowDx="0"
         android:shadowDy="0"
         android:shadowRadius="5"
-        android:layout_gravity="center"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/main_senha"
         android:layout_marginTop="20dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:text="BusON Versão Beta"/>
 
-</LinearLayout>
+</RelativeLayout>

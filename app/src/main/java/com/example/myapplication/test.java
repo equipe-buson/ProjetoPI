@@ -43,7 +43,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
 
         final EditText etNome = (EditText) findViewById(R.id.nome_motorista);
         final EditText etNumeroOnibus = (EditText) findViewById(R.id.numero_onibus);
-        Spinner etLinha = (Spinner) findViewById(R.id.linha);
+        final Spinner etLinha = (Spinner) findViewById(R.id.linha);
 
         final String nome = etNome.getText().toString();
         final String numerobus = etNumeroOnibus.getText().toString();
@@ -58,11 +58,10 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
 
         // Spinner Drop down elements
         final List<String> categories = new ArrayList<String>();
-        categories.add("Terminal - Bela vista");
-        categories.add("Bela Vista - Terminal");
-        categories.add("Terminal - Poço Grande");
-        categories.add("Poço Grande - Terminal");
-
+        categories.add("Blumenau - Ilhota");
+        categories.add("Ilhota - Blumenau");
+        categories.add("Blumenau - Gaspar");
+        categories.add("Gaspar - Blumenau");
 
 
         // Creating adapter for spinner
@@ -94,6 +93,10 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 botao.setVisibility(View.INVISIBLE);
                 botao_finalizar.setVisibility(View.VISIBLE);
 
+                etNome.setEnabled(false);
+                etNumeroOnibus.setEnabled(false);
+                etLinha.setEnabled(false);
+
                 Toast.makeText(test.this,"Iniciando",Toast.LENGTH_SHORT).show();
 
             }
@@ -109,6 +112,14 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
 
                 botao_finalizar.setVisibility(View.INVISIBLE);
                 botao.setVisibility(View.VISIBLE);
+
+                etNome.setEnabled(true);
+                etNumeroOnibus.setEnabled(true);
+                etLinha.setEnabled(true);
+
+                etNome.setText("");
+                etNumeroOnibus.setText("");
+
 
                 Toast.makeText(test.this,"Finalizando",Toast.LENGTH_SHORT).show();
 
