@@ -7,16 +7,25 @@ public class mot {
     private String nomeMotorista;
     private String numMotorista;
     private String linha;
-
-
-    private Array categorias;
-
+    private String coordenadas;
 
     public mot() {
         this.nomeMotorista = nomeMotorista;
         this.numMotorista = numMotorista;
         this.linha = linha;
+        this.coordenadas = coordenadas;
+    }
 
+
+
+    private Array categorias;
+
+    public String getCoordenadas() {
+        return coordenadas;
+    }
+
+    public void setCoordenadas(String coordenadas) {
+        this.coordenadas = coordenadas;
     }
 
     public String getNomeMotorista() {

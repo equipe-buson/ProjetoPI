@@ -73,6 +73,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         spinner.setAdapter(dataAdapter);
 
         final mot motorista = new mot();
+        final Dados dados = new Dados();
         incializarFireBase();
         int id = 1;
 
@@ -82,10 +83,14 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
             public void onClick(View v) {
                 final String linha = spinner.getSelectedItem().toString();
 
+               String coor = dados.coo;
+
 
                 motorista.setNomeMotorista(etNome.getText().toString());
                 motorista.setNumMotorista(etNumeroOnibus.getText().toString());
                 motorista.setLinha(linha);
+                motorista.setCoordenadas(coor);
+
 
                 ref.child("mot02").child(motorista.getNomeMotorista()).setValue(motorista);
 

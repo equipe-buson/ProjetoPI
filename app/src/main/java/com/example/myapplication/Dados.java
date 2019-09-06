@@ -24,6 +24,16 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback, Googl
 
     GoogleApiClient mGoogleApiClient;
 
+    public String getCoo() {
+        return coo;
+    }
+
+    public void setCoo(String coo) {
+        this.coo = coo;
+    }
+
+    String coo="";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,12 +81,17 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback, Googl
         @Override
         public void onLocationResult(LocationResult locationResult) {
             for (Location location : locationResult.getLocations()) {
+
                 Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
 
+                LatLng coordenadas = new LatLng(location.getLatitude(),location.getLongitude());
+
+                coo = coordenadas.toString();
+
+
 
                 super.onLocationResult(locationResult);
-
             }
         }
 
