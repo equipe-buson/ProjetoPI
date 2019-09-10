@@ -83,14 +83,12 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
             public void onClick(View v) {
                 final String linha = spinner.getSelectedItem().toString();
 
-               String coor = dados.coo;
-
 
                 motorista.setNomeMotorista(etNome.getText().toString());
                 motorista.setNumMotorista(etNumeroOnibus.getText().toString());
                 motorista.setLinha(linha);
-                motorista.setCoordenadas(coor);
-
+                motorista.setLatitude(dados.lag);
+                motorista.setLongitude(dados.log);
 
                 ref.child("mot02").child(motorista.getNomeMotorista()).setValue(motorista);
 
