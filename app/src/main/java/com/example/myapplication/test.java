@@ -90,7 +90,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 motorista.setLatitude(dados.lag);
                 motorista.setLongitude(dados.log);
 
-                ref.child("mot02").child(motorista.getNomeMotorista()).setValue(motorista);
+                ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
 
                 botao.setVisibility(View.INVISIBLE);
                 botao_finalizar.setVisibility(View.VISIBLE);
@@ -110,7 +110,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
             public void onClick(View v) {
 
 
-                ref.child("mot02").child(motorista.getNomeMotorista()).removeValue();
+                ref.child("motorista").child(motorista.getNumMotorista()).removeValue();
 
                 botao_finalizar.setVisibility(View.INVISIBLE);
                 botao.setVisibility(View.VISIBLE);

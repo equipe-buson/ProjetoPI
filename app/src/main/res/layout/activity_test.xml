@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         app:passwordToggleEnabled="true"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/nome_motorista"
@@ -27,7 +28,8 @@
         android:layout_height="wrap_content"
         app:passwordToggleEnabled="true"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/numero_onibus"
