@@ -66,7 +66,7 @@ public class MainActivity extends Activity {
 
                         if (task.isSuccessful()){
 
-                            Intent vai_pro_test = new Intent(MainActivity.this, test.class);
+                            Intent vai_pro_test = new Intent(MainActivity.this, Dados.class);
                             startActivity(vai_pro_test);
 
                             et_email.setText("");
@@ -80,11 +80,8 @@ public class MainActivity extends Activity {
                     }
                 });
 
-
             }
         });
-
-
 
     }
 }

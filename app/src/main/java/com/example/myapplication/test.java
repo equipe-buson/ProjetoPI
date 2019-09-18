@@ -74,6 +74,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
 
         final mot motorista = new mot();
         final Dados dados = new Dados();
+        dados.buildGoogleApiClient();
         incializarFireBase();
         int id = 1;
 
@@ -87,8 +88,9 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 motorista.setNomeMotorista(etNome.getText().toString());
                 motorista.setNumMotorista(etNumeroOnibus.getText().toString());
                 motorista.setLinha(linha);
-                motorista.setLatitude(dados.lag);
-                motorista.setLongitude(dados.log);
+                motorista.setLatitude(dados.pontoBlumenau.latitude);
+                motorista.setLongitude(dados.pontoBlumenau.longitude);
+                Toast.makeText(test.this,"o" +dados.pontoBlumenau.latitude + dados.pontoBlumenau.longitude,Toast.LENGTH_SHORT).show();
 
                 ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
 
@@ -99,7 +101,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
                 etNumeroOnibus.setEnabled(false);
                 etLinha.setEnabled(false);
 
-                Toast.makeText(test.this,"Iniciando",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(test.this,"Iniciando",Toast.LENGTH_SHORT).show();
 
             }
 

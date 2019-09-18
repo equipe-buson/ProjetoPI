@@ -8,6 +8,12 @@
     tools:context=".test"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="156dp"
+        app:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
+
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="270dp"
         android:layout_height="wrap_content"

@@ -32,6 +32,8 @@ public class mot {
         this.numMotorista = numMotorista;
         this.linha = linha;
         this.coordenadas = coordenadas;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
 

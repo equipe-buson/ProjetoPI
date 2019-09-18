@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -46,7 +47,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 public class Dados extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener  {
+        GoogleApiClient.OnConnectionFailedListener {
 
     ArrayList<LatLng> pontosLatLng = new ArrayList();
 
@@ -175,8 +176,28 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
 
                 Toast.makeText(Dados.this,String.valueOf(lag)+String.valueOf(log)+" < Coordenadas",Toast.LENGTH_SHORT).show();
 
+            }
+        });
+
+        botao_finalizar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
 
+                ref.child("motorista").child(motorista.getNumMotorista()).removeValue();
+
+                botao_finalizar.setVisibility(View.INVISIBLE);
+                botao.setVisibility(View.VISIBLE);
+
+                etNome.setEnabled(true);
+                etNumeroOnibus.setEnabled(true);
+                spinner.setEnabled(true);
+
+                etNome.setText("");
+                etNumeroOnibus.setText("");
+
+
+                Toast.makeText(Dados.this,"Finalizando",Toast.LENGTH_SHORT).show();
 
             }
         });
