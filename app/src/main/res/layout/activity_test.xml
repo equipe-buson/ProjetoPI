@@ -8,18 +8,13 @@
     tools:context=".test"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="match_parent"
-        android:layout_height="156dp"
-        app:srcCompat="@drawable/common_google_signin_btn_icon_dark_focused" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         app:passwordToggleEnabled="true"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
+        app:errorEnabled="true"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
     <com.google.android.material.textfield.TextInputEditText
@@ -35,7 +30,8 @@
         app:passwordToggleEnabled="true"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        app:errorEnabled="true"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/numero_onibus"
@@ -64,7 +60,7 @@
         android:textColor="#FFFFFF"
         android:textSize="20dp"
         android:layout_width="270dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:background="@drawable/buttonshape"
         android:shadowColor="#1CC2FF"
         android:shadowDx="0"
@@ -77,9 +73,9 @@
     <Button
         android:id="@+id/btn_finalizar"
         android:layout_width="270dp"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
-        android:layout_marginTop="-30dp"
+        android:layout_marginTop="-40dp"
         android:background="@drawable/buttonshape2"
         android:shadowColor="#FF0F0F"
         android:shadowDx="0"
@@ -90,5 +86,19 @@
         android:textSize="20dp"
         android:visibility="invisible"
         android:clickable="true"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="by Equipe BusON"
+            android:textAlignment="center"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

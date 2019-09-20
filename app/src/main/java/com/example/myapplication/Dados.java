@@ -122,7 +122,6 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         final String nome = etNome.getText().toString().trim();
         final String numerobus = etNumeroOnibus.getText().toString().trim();
 
-
         buildGoogleApiClient();
 
         final Spinner spinner = (Spinner) findViewById(R.id.linha);
@@ -154,27 +153,56 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
 
-                final String linha = spinner.getSelectedItem().toString();
+                if (etNome.getText().toString().length()>=2 && etNumeroOnibus.getText().toString().length()>3) {
 
-                motorista.setNomeMotorista(etNome.getText().toString());
-                motorista.setNumMotorista(etNumeroOnibus.getText().toString());
-                motorista.setLinha(linha);
-                motorista.setLatitude(lag);
-                motorista.setLongitude(log);
-                motorista.setCoordenadas(String.valueOf(pontoBlumenau));
+                    botao.setEnabled(true);
 
+                    final String linha = spinner.getSelectedItem().toString();
 
+                    motorista.setNomeMotorista(etNome.getText().toString());
+                    motorista.setNumMotorista(etNumeroOnibus.getText().toString());
+                    motorista.setLinha(linha);
+                    motorista.setLatitude(lag);
+                    motorista.setLongitude(log);
+                    motorista.setCoordenadas(String.valueOf(pontoBlumenau));
 
-                ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
+                    ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
 
-                botao.setVisibility(View.INVISIBLE);
-                botao_finalizar.setVisibility(View.VISIBLE);
+                    botao.setVisibility(View.INVISIBLE);
+                    botao_finalizar.setVisibility(View.VISIBLE);
 
-                etNome.setEnabled(false);
-                etNumeroOnibus.setEnabled(false);
-                spinner.setEnabled(false);
+                    etNome.setEnabled(false);
+                    etNumeroOnibus.setEnabled(false);
+                    spinner.setEnabled(false);
 
-                Toast.makeText(Dados.this,String.valueOf(lag)+String.valueOf(log)+" < Coordenadas",Toast.LENGTH_SHORT).show();
+                }else if((etNome.getText().toString().length()<=0 && etNumeroOnibus.getText().toString().length()<=0)){
+
+                    etNome.setError("Campo obrigatório");
+                    etNumeroOnibus.setError("Campo obrigatório");
+
+                }else if((etNome.getText().toString().length()<2 && etNumeroOnibus.getText().toString().length()<3)){
+
+                    etNome.setError("Nome deve conter mais de dois caracteres");
+                    etNumeroOnibus.setError("Número do ônibus deve conter mais de três caracteres");
+
+                }else if(etNome.getText().toString().length()<2) {
+
+                    etNome.setError("Nome deve conter mais de dois caracteres");
+
+                }else if(etNome.getText().toString().length()<=0) {
+
+                    etNome.setError("Campo obrigatório");
+
+                }else if (etNumeroOnibus.getText().toString().length()<3){
+
+                    etNumeroOnibus.setError("Campo obrigatório");
+
+                }else if (etNumeroOnibus.getText().toString().length()<3){
+
+                    etNumeroOnibus.setError("Número do ônibus deve conter mais de três caracteres");
+
+                }
+
 
             }
         });
@@ -284,8 +312,6 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
 
                 lag = pontoBlumenau.latitude;
                 log = pontoBlumenau.longitude;
-
-                Toast.makeText(Dados.this,"coordenadas >" + lag+" "+log,Toast.LENGTH_LONG).show();
 //
 //                // referencia posicao dos pontos
 //                markerPosicao.position(latLng);

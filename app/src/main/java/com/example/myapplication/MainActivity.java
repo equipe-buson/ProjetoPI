@@ -36,7 +36,7 @@ public class MainActivity extends Activity {
         mAuth = FirebaseAuth.getInstance();
 
 
-        Button login = (Button) findViewById(R.id.btn_login);
+        final Button login = (Button) findViewById(R.id.btn_login);
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -58,27 +58,45 @@ public class MainActivity extends Activity {
                 final String email = et_email.getText().toString().trim();
                 final String senha = et_senha.getText().toString().trim();
 
-                Toast.makeText(MainActivity.this,"Acessando conta",Toast.LENGTH_LONG).show();
+                if (et_email.getText().toString().length()<=0 && et_senha.getText().toString().length()<=0) {
 
-                mAuth.signInWithEmailAndPassword(email,senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    et_email.setError("Campo nescessário");
+                    et_senha.setError("Campo nescessário");
 
-                        if (task.isSuccessful()){
+                }else  if (et_email.getText().toString().length()<=0){
 
-                            Intent vai_pro_test = new Intent(MainActivity.this, Dados.class);
-                            startActivity(vai_pro_test);
+                    et_email.setError("Campo nescessário");
 
-                            et_email.setText("");
-                            et_senha.setText("");
+                }else if (et_senha.getText().toString().length()<=0){
 
-                        }else{
+                    et_senha.setError("Campo nescessário");
 
-                            Toast.makeText(MainActivity.this,"Email ou senha Incorretos",Toast.LENGTH_SHORT).show();
+                }else if (et_senha.getText().toString().length()<8){
 
+                    et_senha.setError("Senha deve conter 8 ou mais caracteres");
+
+                }else if (et_email.getText().toString().length()>0 && et_senha.getText().toString().length()>8) {
+
+                    login.setEnabled(true);
+
+                    mAuth.signInWithEmailAndPassword(email, senha).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+
+                            if (task.isSuccessful()) {
+
+                                Intent vai_pro_test = new Intent(MainActivity.this, Dados.class);
+                                startActivity(vai_pro_test);
+
+                                Toast.makeText(MainActivity.this, "Acessando conta", Toast.LENGTH_LONG).show();
+
+                                et_email.setText("");
+                                et_senha.setText("");
+
+                            }
                         }
-                    }
-                });
+                    });
+                }
 
             }
         });
