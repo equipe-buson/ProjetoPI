@@ -83,7 +83,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     Double lag;
     Double log;
     LatLng pontoBlumenau;
-
+Runnable r;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference ref;
@@ -153,20 +153,35 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
             @Override
             public void onClick(View v) {
 
+                final String linha = spinner.getSelectedItem().toString();
+
+
                 if (etNome.getText().toString().length()>=2 && etNumeroOnibus.getText().toString().length()>3) {
 
                     botao.setEnabled(true);
 
-                    final String linha = spinner.getSelectedItem().toString();
+                    r = new Runnable() {
+                        @Override
+                        public void run() {
+                            for(int i = 0; i<=i +1; i++) {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                                motorista.setNomeMotorista(etNome.getText().toString());
+                                motorista.setNumMotorista(etNumeroOnibus.getText().toString());
+                                motorista.setLinha(linha);
+                                motorista.setLatitude(lag);
+                                motorista.setLongitude(log);
+                                motorista.setCoordenadas(String.valueOf(pontoBlumenau));
 
-                    motorista.setNomeMotorista(etNome.getText().toString());
-                    motorista.setNumMotorista(etNumeroOnibus.getText().toString());
-                    motorista.setLinha(linha);
-                    motorista.setLatitude(lag);
-                    motorista.setLongitude(log);
-                    motorista.setCoordenadas(String.valueOf(pontoBlumenau));
+                                ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
+                            }
+                        }
+                    };
 
-                    ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
+                    new Thread(r).start();
 
                     botao.setVisibility(View.INVISIBLE);
                     botao_finalizar.setVisibility(View.VISIBLE);
@@ -227,6 +242,8 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
 
                 Toast.makeText(Dados.this,"Finalizando",Toast.LENGTH_SHORT).show();
 
+                new Thread(r).isInterrupted(); 
+
             }
         });
 
@@ -283,8 +300,8 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000); // one minute interval
-        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setInterval(1000); // one minute interval
+        mLocationRequest.setFastestInterval(1000);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
