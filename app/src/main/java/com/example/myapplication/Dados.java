@@ -51,10 +51,6 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
 
     ArrayList<LatLng> pontosLatLng = new ArrayList();
 
-//     LatLng pontoBlumenau = new LatLng(-26.906438,-49.077927);
-     LatLng pontoIlhota = new LatLng(-26.895372, -48.823808);
-
-
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
     LocationRequest mLocationRequest;
@@ -83,7 +79,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     Double lag;
     Double log;
     LatLng pontoBlumenau;
-Runnable r;
+    Runnable r;
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference ref;
@@ -108,10 +104,6 @@ Runnable r;
         pontosLatLng.add(new LatLng(-26.906440, -49.075242));
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
-//        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-//        //  assert mapFrag != null;
-//        mapFrag.getMapAsync(this);
 
         final Button botao = (Button) findViewById(R.id.btn_iniciar);
         final Button botao_finalizar = (Button) findViewById(R.id.btn_finalizar);
@@ -142,7 +134,6 @@ Runnable r;
 
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
-
 
         setTitle("Motorista");
 
@@ -195,7 +186,7 @@ Runnable r;
                     etNome.setError("Campo obrigatório");
                     etNumeroOnibus.setError("Campo obrigatório");
 
-                }else if((etNome.getText().toString().length()<2 && etNumeroOnibus.getText().toString().length()<3)){
+                }else if((etNome.getText().toString().length()<=1 && etNumeroOnibus.getText().toString().length()<=3)){
 
                     etNome.setError("Nome deve conter mais de dois caracteres");
                     etNumeroOnibus.setError("Número do ônibus deve conter mais de três caracteres");
@@ -217,15 +208,12 @@ Runnable r;
                     etNumeroOnibus.setError("Número do ônibus deve conter mais de três caracteres");
 
                 }
-
-
             }
         });
 
         botao_finalizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
 
                 ref.child("motorista").child(motorista.getNumMotorista()).removeValue();
 
@@ -242,12 +230,10 @@ Runnable r;
 
                 Toast.makeText(Dados.this,"Finalizando",Toast.LENGTH_SHORT).show();
 
-                new Thread(r).isInterrupted(); 
+                new Thread(r).interrupt();
 
             }
         });
-
-
 
     }
 
@@ -302,7 +288,7 @@ Runnable r;
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(1000); // one minute interval
         mLocationRequest.setFastestInterval(1000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -329,34 +315,10 @@ Runnable r;
 
                 lag = pontoBlumenau.latitude;
                 log = pontoBlumenau.longitude;
-//
-//                // referencia posicao dos pontos
-//                markerPosicao.position(latLng);
-//
-//
-//                // Cria titulo para os marcadores
-//                markerPosicao.title("Posição Atual");
-//
-//
-//                //Cria icones para os marcadores
-//                markerPosicao.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-//
-//
-//                // adiciona os pontos/marcadores no mapa
-//                mCurrLocationMarker = mGoogleMap.addMarker(markerPosicao);
-//
-//                //move map camera
-//                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
-//
-////                //polyline method
-////                points.add(latLng);
-////                drawLine();
-//                CriaMarcadorPonto(pontosLatLng);
+
             }
         }
     };
-
-
 
     private void drawLine() {
 
@@ -430,37 +392,6 @@ Runnable r;
             }
         }
     }
-
-    public void CriaMarcadorPonto(ArrayList pontosLatLng){
-
-        for (int i = 0; i < pontosLatLng.size(); i++) {
-
-            MarkerOptions markerOptions = new MarkerOptions();
-
-            markerOptions.position((LatLng) pontosLatLng.get(i));
-
-            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-
-            mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
-
-        }
-    }
-
-    public ArrayList<LatLng> CriaPontos() {
-
-        pontosLatLng.add(new LatLng(-26.895372, -48.823808));
-        pontosLatLng.add(new LatLng(-26.913867, -49.076712));
-        pontosLatLng.add(new LatLng(-26.915559, -49.073026));
-        pontosLatLng.add(new LatLng(-26.920668, -49.067681));
-        pontosLatLng.add(new LatLng(-26.923110, -49.063270));
-        return pontosLatLng;
-    }
-
-    public ArrayList<LatLng> getPontosLatLng() {
-        return pontosLatLng;
-    }
-
-
 
 }
 
