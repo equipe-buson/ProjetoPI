@@ -72,7 +72,7 @@ public class test extends AppCompatActivity implements AdapterView.OnItemSelecte
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
 
-        final mot motorista = new mot();
+        final Mot motorista = new Mot();
         final Dados dados = new Dados();
         dados.buildGoogleApiClient();
         incializarFireBase();

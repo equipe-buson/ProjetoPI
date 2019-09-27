@@ -2,7 +2,7 @@ package com.example.myapplication;
 
 import java.lang.reflect.Array;
 
-public class mot {
+public class Mot {
 
     private String nomeMotorista;
     private String numMotorista;
@@ -27,7 +27,7 @@ public class mot {
         this.longitude = longitude;
     }
 
-    public mot() {
+    public Mot() {
         this.nomeMotorista = nomeMotorista;
         this.numMotorista = numMotorista;
         this.linha = linha;
@@ -35,8 +35,6 @@ public class mot {
         this.latitude = latitude;
         this.longitude = longitude;
     }
-
-
 
     private Array categorias;
 

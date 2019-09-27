@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -14,7 +15,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -26,11 +26,9 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -41,9 +39,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-
 
 public class Dados extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -59,6 +54,10 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
 
+    Double lag;
+    Double log;
+    LatLng pontoBlumenau;
+    Runnable r;
 
     public Double getLag() {
         return lag;
@@ -76,11 +75,6 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         this.log = log;
     }
 
-    Double lag;
-    Double log;
-    LatLng pontoBlumenau;
-    Runnable r;
-
     FirebaseDatabase firebaseDatabase;
     DatabaseReference ref;
 
@@ -89,9 +83,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         FirebaseApp.initializeApp(Dados.this);
         firebaseDatabase = FirebaseDatabase.getInstance();
         ref = firebaseDatabase.getReference();
-
     }
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -99,11 +91,15 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
 
+        setTitle("Motorista");
+
         //PolyLine Initialize
 //
         pontosLatLng.add(new LatLng(-26.906440, -49.075242));
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Pegando dados
 
         final Button botao = (Button) findViewById(R.id.btn_iniciar);
         final Button botao_finalizar = (Button) findViewById(R.id.btn_finalizar);
@@ -114,12 +110,13 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         final String nome = etNome.getText().toString().trim();
         final String numerobus = etNumeroOnibus.getText().toString().trim();
 
+        // Pedindo a permissão de utilizar o GPS para o usuário
+        checkLocationPermission();
         buildGoogleApiClient();
 
         final Spinner spinner = (Spinner) findViewById(R.id.linha);
 
         // Spinner click listener
-        // Spinner Drop down elements
         final List<String> categories = new ArrayList<String>();
         categories.add("Blumenau - Ilhota");
         categories.add("Ilhota - Blumenau");
@@ -135,28 +132,29 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         // attaching data adapter to spinner
         spinner.setAdapter(dataAdapter);
 
-        setTitle("Motorista");
-
         incializarFireBase();
-        final mot motorista = new mot();
 
+        final Mot motorista = new Mot();
+
+        // Button "Iniciar"
         botao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 final String linha = spinner.getSelectedItem().toString();
 
-
+                // Verificando se os dados inseridos estão corretos
                 if (etNome.getText().toString().length()>=2 && etNumeroOnibus.getText().toString().length()>3) {
 
                     botao.setEnabled(true);
 
+                    // Criando Thread
                     r = new Runnable() {
                         @Override
                         public void run() {
                             for(int i = 0; i<=i +1; i++) {
                                 try {
-                                    Thread.sleep(1000);
+                                    Thread.sleep(500); // 1/2 segundo
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -172,7 +170,10 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                         }
                     };
 
+                    // Iniciando a Thread
                     new Thread(r).start();
+
+                    new Thread(r).interrupt();
 
                     botao.setVisibility(View.INVISIBLE);
                     botao_finalizar.setVisibility(View.VISIBLE);
@@ -181,6 +182,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                     etNumeroOnibus.setEnabled(false);
                     spinner.setEnabled(false);
 
+                    // Verificando se os dados inseridos possuem erros
                 }else if((etNome.getText().toString().length()<=0 && etNumeroOnibus.getText().toString().length()<=0)){
 
                     etNome.setError("Campo obrigatório");
@@ -206,11 +208,11 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                 }else if (etNumeroOnibus.getText().toString().length()<3){
 
                     etNumeroOnibus.setError("Número do ônibus deve conter mais de três caracteres");
-
                 }
             }
         });
 
+        // Button Finalizar
         botao_finalizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,13 +229,17 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                 etNome.setText("");
                 etNumeroOnibus.setText("");
 
-
                 Toast.makeText(Dados.this,"Finalizando",Toast.LENGTH_SHORT).show();
-
-                new Thread(r).interrupt();
-
             }
         });
+    }
+
+    // Google Things and GPS
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
 
     }
 
@@ -286,8 +292,8 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(1000); // one minute interval
-        mLocationRequest.setFastestInterval(1000);
+        mLocationRequest.setInterval(500); // 1/2 segundo
+        mLocationRequest.setFastestInterval(500);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -308,24 +314,13 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
 
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-                 pontoBlumenau = new LatLng(location.getLatitude(),location.getLongitude());
-
-                // Cria marcadores para os pontos de onibus e posicao do celular
-                MarkerOptions markerPosicao = new MarkerOptions();
+                pontoBlumenau = new LatLng(location.getLatitude(),location.getLongitude());
 
                 lag = pontoBlumenau.latitude;
                 log = pontoBlumenau.longitude;
-
             }
         }
     };
-
-    private void drawLine() {
-
-//        PolylineOptions options = new PolylineOptions().width(8).color( Color.BLUE);
-//            options.add(pontoBlumenau,pontoIlhota);
-//        line = mGoogleMap.addPolyline(options); //add Polyline
-    }
 
     @Override
     public void onConnectionSuspended(int i) {}
@@ -392,6 +387,5 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
             }
         }
     }
-
 }
 
