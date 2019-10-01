@@ -1,8 +1,23 @@
 package com.example.myapplication;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class Mot {
+
+
+    FirebaseDatabase firebaseDatabase;
+    DatabaseReference ref;
+
+    private void incializarFireBase() {
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        ref = firebaseDatabase.getReference();
+    }
+
 
     private String nomeMotorista;
     private String numMotorista;
@@ -69,4 +84,8 @@ public class Mot {
     public void setLinha(String linha) {
         this.linha = linha;
     }
+
+
+
+
 }

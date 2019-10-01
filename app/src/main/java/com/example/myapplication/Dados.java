@@ -133,8 +133,18 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         spinner.setAdapter(dataAdapter);
 
         incializarFireBase();
-
+        double lati=0;
+        double longi=0;
         final Mot motorista = new Mot();
+        String nomep="";
+        Double latitudep = null;
+        Double longitudep =null;
+
+        pontos ponto = new pontos();
+        ponto.setValues(nomep,latitudep,longitudep);
+        
+
+        ponto.Cadastrar();
 
         // Button "Iniciar"
         botao.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +164,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                         public void run() {
                             for(int i = 0; i<=i +1; i++) {
                                 try {
-                                    Thread.sleep(500); // 1/2 segundo
+                                    Thread.sleep(1000); // 1/2 segundo
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
@@ -166,14 +176,14 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                                 motorista.setCoordenadas(String.valueOf(pontoBlumenau));
 
                                 ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
+
                             }
                         }
                     };
 
                     // Iniciando a Thread
-                    new Thread(r).start();
+                     new Thread(r).start();
 
-                    new Thread(r).interrupt();
 
                     botao.setVisibility(View.INVISIBLE);
                     botao_finalizar.setVisibility(View.VISIBLE);
@@ -216,6 +226,8 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         botao_finalizar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new Thread(r).currentThread().destroy();
+
 
                 ref.child("motorista").child(motorista.getNumMotorista()).removeValue();
 
@@ -230,6 +242,9 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                 etNumeroOnibus.setText("");
 
                 Toast.makeText(Dados.this,"Finalizando",Toast.LENGTH_SHORT).show();
+
+
+
             }
         });
     }
@@ -387,5 +402,52 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
             }
         }
     }
+
+
+
+    public class pontos {
+
+        String nomeP;
+        Double longitudeP;
+        Double latitudeP;
+
+        public pontos() {
+        }
+
+        public void setValues(String nP, Double longP, Double latP) {
+           nomeP = nP;
+           longitudeP = longP;
+           latitudeP = latP;
+        }
+        
+
+        public void Cadastrar (){
+
+            ArrayList<pontos> pontoBluIlhota = null;
+
+            pontos p1 = new pontos();
+            p1.setValues("Ponto 1", -26.904572, -49.077382);
+            pontos p2 = new pontos();
+            p2.setValues("Ponto 2", -26.908214, -49.080466);
+            pontos p3 = new pontos();
+            p3.setValues("Ponto 3", -26.913887, -49.076706);
+
+
+            pontoBluIlhota.add(p1);
+            pontoBluIlhota.add(p2);
+            pontoBluIlhota.add(p3);
+
+
+
+                ref.child("ponto").child("Ponto 1").setValue(p1);
+                ref.child("ponto").child("Ponto 2").setValue(p2);
+                ref.child("ponto").child("Ponto 3").setValue(p3);
+
+
+        }
+
+    }
+
+
 }
 
