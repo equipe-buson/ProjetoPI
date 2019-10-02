@@ -1,23 +1,18 @@
-package com.example.myapplication;
+package br.com.busonusuario;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,25 +21,28 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class Dados extends FragmentActivity implements OnMapReadyCallback,
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener  {
 
     ArrayList<LatLng> pontosLatLng = new ArrayList();
+
+    // LatLng pontoBlumenau = new LatLng(-26.906438,-49.077927);
+    // LatLng pontoIlhota = new LatLng(-26.895372, -48.823808);
 
     GoogleMap mGoogleMap;
     SupportMapFragment mapFrag;
@@ -58,6 +56,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     Double log;
     LatLng pontoBlumenau;
     Runnable r;
+    Mot motorista = new Mot();
 
     public Double getLag() {
         return lag;
@@ -80,7 +79,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
 
     private void incializarFireBase() {
 
-        FirebaseApp.initializeApp(Dados.this);
+        FirebaseApp.initializeApp(MapsActivity.this);
         firebaseDatabase = FirebaseDatabase.getInstance();
         ref = firebaseDatabase.getReference();
     }
@@ -89,171 +88,43 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_test);
-
-        setTitle("Motorista");
+        setContentView(R.layout.activity_maps);
 
         //PolyLine Initialize
 //
-        pontosLatLng.add(new LatLng(-26.906440, -49.075242));
+        /*pontosLatLng.add(new LatLng(-26.906440, -49.075242));*/
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        // Pegando dados
+        mapFrag = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        //  assert mapFrag != null;
+        mapFrag.getMapAsync(this);
 
-        final Button botao = (Button) findViewById(R.id.btn_iniciar);
-        final Button botao_finalizar = (Button) findViewById(R.id.btn_finalizar);
-
-        final TextInputEditText etNome = findViewById(R.id.nome_motorista);
-        final TextInputEditText etNumeroOnibus = findViewById(R.id.numero_onibus);
-
-        final String nome = etNome.getText().toString().trim();
-        final String numerobus = etNumeroOnibus.getText().toString().trim();
-
-        // Pedindo a permissão de utilizar o GPS para o usuário
-        checkLocationPermission();
-        buildGoogleApiClient();
-
-        final Spinner spinner = (Spinner) findViewById(R.id.linha);
-
-        // Spinner click listener
-        final List<String> categories = new ArrayList<String>();
-        categories.add("Blumenau - Ilhota");
-        categories.add("Ilhota - Blumenau");
-        categories.add("Blumenau - Gaspar");
-        categories.add("Gaspar - Blumenau");
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, categories);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        spinner.setAdapter(dataAdapter);
-
-        incializarFireBase();
-        double lati=0;
-        double longi=0;
-        final Mot motorista = new Mot();
-        String nomep="";
-        Double latitudep = null;
-        Double longitudep =null;
-
-        pontos ponto = new pontos();
-        ponto.setValues(nomep,latitudep,longitudep);
-        
-
-        ponto.Cadastrar();
-
-        // Button "Iniciar"
-        botao.setOnClickListener(new View.OnClickListener() {
+        r = new Runnable() {
             @Override
-            public void onClick(View v) {
+            public void run() {
+                for(int i = 0; i<=i +1; i++) {
+                    try {
+                        Thread.sleep(1000); // 1/2 segundo
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-                final String linha = spinner.getSelectedItem().toString();
+                    ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
 
-                // Verificando se os dados inseridos estão corretos
-                if (etNome.getText().toString().length()>=2 && etNumeroOnibus.getText().toString().length()>3) {
+                    motorista.setNomeMotorista(etNome.getText().toString());
+                    motorista.setNumMotorista(etNumeroOnibus.getText().toString());
+                    motorista.setLinha(linha);
+                    motorista.setLatitude(lag);
+                    motorista.setLongitude(log);
+                    motorista.setCoordenadas(String.valueOf(pontoBlumenau));
 
-                    botao.setEnabled(true);
-
-                    // Criando Thread
-                    r = new Runnable() {
-                        @Override
-                        public void run() {
-                            for(int i = 0; i<=i +1; i++) {
-                                try {
-                                    Thread.sleep(1000); // 1/2 segundo
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                motorista.setNomeMotorista(etNome.getText().toString());
-                                motorista.setNumMotorista(etNumeroOnibus.getText().toString());
-                                motorista.setLinha(linha);
-                                motorista.setLatitude(lag);
-                                motorista.setLongitude(log);
-                                motorista.setCoordenadas(String.valueOf(pontoBlumenau));
-
-                                ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
-
-                            }
-                        }
-                    };
-
-                    // Iniciando a Thread
-                     new Thread(r).start();
-
-
-                    botao.setVisibility(View.INVISIBLE);
-                    botao_finalizar.setVisibility(View.VISIBLE);
-
-                    etNome.setEnabled(false);
-                    etNumeroOnibus.setEnabled(false);
-                    spinner.setEnabled(false);
-
-                    // Verificando se os dados inseridos possuem erros
-                }else if((etNome.getText().toString().length()<=0 && etNumeroOnibus.getText().toString().length()<=0)){
-
-                    etNome.setError("Campo obrigatório");
-                    etNumeroOnibus.setError("Campo obrigatório");
-
-                }else if((etNome.getText().toString().length()<=1 && etNumeroOnibus.getText().toString().length()<=3)){
-
-                    etNome.setError("Nome deve conter mais de dois caracteres");
-                    etNumeroOnibus.setError("Número do ônibus deve conter mais de três caracteres");
-
-                }else if(etNome.getText().toString().length()<2) {
-
-                    etNome.setError("Nome deve conter mais de dois caracteres");
-
-                }else if(etNome.getText().toString().length()<=0) {
-
-                    etNome.setError("Campo obrigatório");
-
-                }else if (etNumeroOnibus.getText().toString().length()<3){
-
-                    etNumeroOnibus.setError("Campo obrigatório");
-
-                }else if (etNumeroOnibus.getText().toString().length()<3){
-
-                    etNumeroOnibus.setError("Número do ônibus deve conter mais de três caracteres");
                 }
             }
-        });
+        };
 
-        // Button Finalizar
-        botao_finalizar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(r).currentThread().destroy();
-
-
-                ref.child("motorista").child(motorista.getNumMotorista()).removeValue();
-
-                botao_finalizar.setVisibility(View.INVISIBLE);
-                botao.setVisibility(View.VISIBLE);
-
-                etNome.setEnabled(true);
-                etNumeroOnibus.setEnabled(true);
-                spinner.setEnabled(true);
-
-                etNome.setText("");
-                etNumeroOnibus.setText("");
-
-                Toast.makeText(Dados.this,"Finalizando",Toast.LENGTH_SHORT).show();
-
-            }
-        });
-    }
-
-    // Google Things and GPS
-
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
+        // Iniciando a Thread
+        new Thread(r).start();
     }
 
     @Override
@@ -305,7 +176,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(500); // 1/2 segundo
+        mLocationRequest.setInterval(500); // one minute interval
         mLocationRequest.setFastestInterval(500);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         if (ContextCompat.checkSelfPermission(this,
@@ -326,14 +197,38 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                 }
 
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                // Cria marcadores para os pontos de onibus e posicao do celular
+                MarkerOptions markerPosicao = new MarkerOptions();
 
-                pontoBlumenau = new LatLng(location.getLatitude(),location.getLongitude());
+                // referencia posicao dos pontos
+                markerPosicao.position(latLng);
 
-                lag = pontoBlumenau.latitude;
-                log = pontoBlumenau.longitude;
+                // Cria titulo para os marcadores
+                markerPosicao.title("Posição Atual");
+
+                //Cria icones para os marcadores
+                markerPosicao.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+
+                // adiciona os pontos/marcadores no mapa
+                mCurrLocationMarker = mGoogleMap.addMarker(markerPosicao);
+
+                //move map camera
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+
+//                //polyline method
+//                points.add(latLng);
+//                drawLine();
+                CriaMarcadorPonto(pontosLatLng);
             }
         }
     };
+
+    private void drawLine() {
+
+//        PolylineOptions options = new PolylineOptions().width(8).color( Color.BLUE);
+//            options.add(pontoBlumenau,pontoIlhota);
+//        line = mGoogleMap.addPolyline(options); //add Polyline
+    }
 
     @Override
     public void onConnectionSuspended(int i) {}
@@ -357,7 +252,7 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(Dados.this,
+                                ActivityCompat.requestPermissions(MapsActivity.this,
                                         new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION );
                             }
@@ -401,51 +296,33 @@ public class Dados extends FragmentActivity implements OnMapReadyCallback,
         }
     }
 
+    public void CriaMarcadorPonto(ArrayList pontosLatLng){
 
+        for (int i = 0; i < pontosLatLng.size(); i++) {
 
-    public class pontos {
+            MarkerOptions markerOptions = new MarkerOptions();
 
-        String nomeP;
-        Double longitudeP;
-        Double latitudeP;
+            markerOptions.position((LatLng) pontosLatLng.get(i));
 
-        public pontos() {
-        }
+            markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
 
-        public void setValues(String nP, Double longP, Double latP) {
-           nomeP = nP;
-           longitudeP = longP;
-           latitudeP = latP;
-        }
-        
-
-        public void Cadastrar (){
-
-            ArrayList<pontos> pontoBluIlhota = null;
-
-            pontos p1 = new pontos();
-            p1.setValues("Ponto 1", -26.904572, -49.077382);
-            pontos p2 = new pontos();
-            p2.setValues("Ponto 2", -26.908214, -49.080466);
-            pontos p3 = new pontos();
-            p3.setValues("Ponto 3", -26.913887, -49.076706);
-
-
-            pontoBluIlhota.add(p1);
-            pontoBluIlhota.add(p2);
-            pontoBluIlhota.add(p3);
-
-
-
-                ref.child("ponto").child("Ponto 1").setValue(p1);
-                ref.child("ponto").child("Ponto 2").setValue(p2);
-                ref.child("ponto").child("Ponto 3").setValue(p3);
-
+            mCurrLocationMarker = mGoogleMap.addMarker(markerOptions);
 
         }
-
     }
 
+    public ArrayList<LatLng> CriaPontos() {
+
+        pontosLatLng.add(new LatLng(-26.895372, -48.823808));
+        pontosLatLng.add(new LatLng(-26.913867, -49.076712));
+        pontosLatLng.add(new LatLng(-26.915559, -49.073026));
+        pontosLatLng.add(new LatLng(-26.920668, -49.067681));
+        pontosLatLng.add(new LatLng(-26.923110, -49.063270));
+        return pontosLatLng;
+    }
+
+    public ArrayList<LatLng> getPontosLatLng() {
+        return pontosLatLng;
+    }
 
 }
-
