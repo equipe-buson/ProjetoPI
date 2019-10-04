@@ -1,5 +1,6 @@
 package br.com.busonusuario;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -8,10 +9,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -30,10 +33,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -55,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Double lag;
     Double log;
     LatLng pontoBlumenau;
-    Runnable r;
+    Runnable r = null;
     Mot motorista = new Mot();
 
     public Double getLag() {
@@ -76,12 +83,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     FirebaseDatabase firebaseDatabase;
     DatabaseReference ref;
+    DatabaseReference myRef;
 
     private void incializarFireBase() {
 
         FirebaseApp.initializeApp(MapsActivity.this);
         firebaseDatabase = FirebaseDatabase.getInstance();
         ref = firebaseDatabase.getReference();
+        myRef = firebaseDatabase.getReference("motorista");
     }
 
     @Override
@@ -89,6 +98,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        incializarFireBase();
 
         //PolyLine Initialize
 //
@@ -100,32 +111,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //  assert mapFrag != null;
         mapFrag.getMapAsync(this);
 
-        r = new Runnable() {
-            @Override
-            public void run() {
-                for(int i = 0; i<=i +1; i++) {
-                    try {
-                        Thread.sleep(1000); // 1/2 segundo
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    myRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
+                            Log.d("TAG","Value is" + map);
 
-                    ref.child("motorista").child(motorista.getNumMotorista()).setValue(motorista);
+                            
 
-                    motorista.setNomeMotorista(etNome.getText().toString());
-                    motorista.setNumMotorista(etNumeroOnibus.getText().toString());
-                    motorista.setLinha(linha);
-                    motorista.setLatitude(lag);
-                    motorista.setLongitude(log);
-                    motorista.setCoordenadas(String.valueOf(pontoBlumenau));
 
-                }
-            }
-        };
+                        }
 
-        // Iniciando a Thread
-        new Thread(r).start();
-    }
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            Log.w("TAG", "Failed to read value.", databaseError.toException());
+                        }
+                    });
+        }
 
     @Override
     public void onPause() {
@@ -198,7 +200,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 // Cria marcadores para os pontos de onibus e posicao do celular
-                MarkerOptions markerPosicao = new MarkerOptions();
+                /*MarkerOptions markerPosicao = new MarkerOptions();
 
                 // referencia posicao dos pontos
                 markerPosicao.position(latLng);
@@ -213,12 +215,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mCurrLocationMarker = mGoogleMap.addMarker(markerPosicao);
 
                 //move map camera
-                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));*/
 
 //                //polyline method
 //                points.add(latLng);
 //                drawLine();
-                CriaMarcadorPonto(pontosLatLng);
+                // CriaMarcadorPonto(pontosLatLng);
             }
         }
     };
