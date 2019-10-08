@@ -59,11 +59,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Marker mCurrLocationMarker;
     FusedLocationProviderClient mFusedLocationClient;
 
+
     Double lag;
     Double log;
     LatLng pontoBlumenau;
     Runnable r = null;
-    Mot motorista = new Mot();
 
     public Double getLag() {
         return lag;
@@ -101,7 +101,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         incializarFireBase();
 
+        Mot motori = new Mot();
         //PolyLine Initialize
+
 //
         /*pontosLatLng.add(new LatLng(-26.906440, -49.075242));*/
 
@@ -114,10 +116,51 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     myRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue();
-                            Log.d("TAG","Value is" + map);
 
-                            
+                            for (DataSnapshot objSnapshot:dataSnapshot.getChildren()){
+                                final String nomeMot = objSnapshot.child("nomeMotorista").getValue().toString();
+                                final String numeroMot = objSnapshot.child("numMotorista").getValue().toString();
+                                final String linhaMot = objSnapshot.child("linha").getValue().toString();
+                                String latitudeMot = objSnapshot.child("latitude").getValue().toString();
+                                String longitudeMot = objSnapshot.child("longitude").getValue().toString();
+                                Log.d("TAG","Value is " + nomeMot);
+                                Log.d("TAG","Value é " + numeroMot);
+                                Log.d("TAG","Value is " + linhaMot);
+                                Log.d("TAG","Value é " + latitudeMot);
+                                Log.d("TAG","Value is " + longitudeMot);
+
+
+                                Double n1 = Double.parseDouble(latitudeMot);
+                                Double n2 = Double.parseDouble(longitudeMot);
+
+                                LatLng latLng = new LatLng(Double.parseDouble(latitudeMot),Double.parseDouble(longitudeMot));
+
+                                MarkerOptions markerPosicao = new MarkerOptions();
+
+                                Marker markerTeste = mGoogleMap.addMarker(new MarkerOptions().position(latLng).title("TESTE").snippet(" Nome: " + nomeMot+ " Número: "+numeroMot+ " Linha: " + linhaMot));
+
+                                if (latLng.longitude != n2 && latLng.latitude != n1){
+                                    
+                                    markerTeste.remove();
+
+                                    latLng = new LatLng(n1,n2);
+
+                                    markerTeste = mGoogleMap.addMarker(new MarkerOptions().position(latLng).title("TESTE").snippet(" Nome: " + nomeMot+ " Número: "+numeroMot+ " Linha: " + linhaMot));
+
+
+                                }
+
+
+                                // referencia posicao dos pontos
+
+
+                                //move map camera
+                               // mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 11));
+
+
+                            }
+
+//                            Map<String, Object> map = (Map<String, Object>) dataSnapshot.getValue() ;
 
 
                         }
